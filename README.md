@@ -7,5 +7,7 @@ Developing an API using Rust.
 ```commandline
 - cargo install cargo-watch
 - sudo apt install libssl-dev
-- cargo install cargo-tarpaulin 
+- cargo install cargo-tarpaulin
+- rustup component add clippy
+- cargo install cargo-audit
 ```
