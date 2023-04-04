@@ -10,4 +10,5 @@ Developing an API using Rust.
 - cargo install cargo-tarpaulin
 - rustup component add clippy
 - cargo install cargo-audit
+- cargo install cargo-expand
 ```
