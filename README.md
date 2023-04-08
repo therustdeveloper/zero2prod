@@ -108,6 +108,13 @@ Type "help" for help.
 newsletter=> 
 ```
 
+### Add Create Database Permissions to newsletter user
+
+```commandline
+postgres=# ALTER USER newsletter CREATEDB;
+ALTER ROLE
+```
+
 ### Configure the workstation
 
 #### Environment Variables
