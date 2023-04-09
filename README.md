@@ -11,6 +11,7 @@ Developing an API using Rust.
 - rustup component add clippy
 - cargo install cargo-audit
 - cargo install cargo-expand
+- cargo install cargo-udeps
 ```
 ## Installing sqlx-cli
 
