@@ -27,11 +27,23 @@ sqlx --help
 
 ## PostgreSQL Database
 
+On macOS I installed PostgreSQL Database using the official installation, the PATH is:
+
+```commandline
+/Library/PostgreSQL/15
+```
+
+Append the `bin` directory to the PATH in `.zprofile` configuration file:
+
+```commandline
+export PATH=$PATH:/Library/PostgreSQL/15/bin
+```
+
 Configure environment variables:
 
 ```commandline
 DB_USER=${POSTGRES_USER:=postgres}
-DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
+DB_PASSWORD="${POSTGRES_PASSWORD:=admin}"
 DB_NAME="${POSTGRES_DB:=newsletter}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 DB_HOST="${POSTGRES_HOST:=localhost}"
@@ -131,6 +143,12 @@ export DATABASE_URL
 ```
 
 ## Adding a migration with sqlx
+
+```commandline
+mkdir migrations
+```
+
+The following command will create a new file on `migrations` directory:
 
 ```commandline
 sqlx migrate add create_subscriptions_table 
