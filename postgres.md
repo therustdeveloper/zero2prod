@@ -46,6 +46,13 @@ postgres=# CREATE EXTENSION IF NOT EXISTS citext;
 CREATE EXTENSION
 ```
 
+## Allow create databases
+
+```commandline
+postgres=# alter user newsletter createdb;
+ALTER ROLE
+```
+
 ## Environment Variables
 
 ```commandline
