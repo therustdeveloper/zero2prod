@@ -38,4 +38,5 @@ databases:
     name: newsletter
     num_nodes: 1
     size: db-s-1vcpu-1gb
-    version: "15"
+    version: '15'
+    production: true
