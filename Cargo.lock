@@ -2929,7 +2929,6 @@ dependencies = [
  "h2",
  "hermit-abi 0.3.2",
  "once_cell",
- "openssl",
  "reqwest",
  "secrecy",
  "serde",
