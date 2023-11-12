@@ -38,4 +38,5 @@ databases:
     name: newsletter
     num_nodes: 1
     version: '12'
+    db_user: 'newsletter'
     size: db-s-dev-database
