@@ -23,7 +23,7 @@ uuid = { version = "1", features = ["v4"] }
 chrono = { version = "0.4.22", default-features = false, features = ["clock"] }
 tracing = "0.1.19"
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
-tracing-bunyan-formatter = "0.3"
+tracing-bunyan-formatter = "0.3.6"
 tracing-log = "0.1.1"
 tracing-actix-web = "0.7"
 secrecy = { version = "0.8", features = ["serde"] }
