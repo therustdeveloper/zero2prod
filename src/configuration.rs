@@ -33,6 +33,7 @@ impl DatabaseSettings {
         let ssl_mode = if self.require_ssl {
             PgSslMode::Require
         } else {
+            // Try an encrypted connection, fallback to unencrypted if it fails
             PgSslMode::Prefer
         };
         PgConnectOptions::new()
