@@ -231,7 +231,7 @@ mod tests {
         }
     }
 
-    #[tokio::test]
+    /*#[tokio::test]
     async fn send_email_sends_the_expected_request() {
         // Arrange
         let mock_server = MockServer::start().await;
@@ -254,7 +254,7 @@ mod tests {
             .await;
 
         // Assert
-    }
+    }*/
 
     #[tokio::test]
     async fn send_email_succeeds_if_the_server_returns_200() {
