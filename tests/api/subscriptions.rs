@@ -30,10 +30,12 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.name, "le guin");
 }
 
-/*#[tokio::test]
+#[tokio::test]
 async fn subscribe_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
+    let client = reqwest::Client::new();
+
     let test_cases = vec![
         ("name=le%20guin", "missing the email"),
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
@@ -42,7 +44,13 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = app.post_subscriptions(invalid_body.into()).await;
+        let response = client
+            .post(&format!("{}/subscriptions", &app.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(invalid_body)
+            .send()
+            .await
+            .expect("Failed to execute request.");
 
         // Assert
         assert_eq!(
@@ -53,7 +61,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             error_message
         );
     }
-}*/
+}
 
 #[tokio::test]
 async fn subscribe_returns_a_400_when_fields_are_present_but_invalid() {
@@ -61,17 +69,17 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_invalid() {
     let app = spawn_app().await;
     let client = reqwest::Client::new();
     let test_cases = vec![
-        ("name=le%20guin", "missing the email"),
-        ("email=ursula_le_guin%40gmail.com", "missing the name"),
-        ("", "missing both name and email"),
+        ("name=&email=ursula_le_guin%40gmail.com", "empty name"),
+        ("name=Ursula&email=", "empty email"),
+        ("name=Ursula&email=definitely-not-an-email", "invalid email"),
     ];
 
-    for (invalid_body, description) in test_cases {
+    for (body, description) in test_cases {
         // Act
         let response = client
             .post(&format!("{}/subscriptions", &app.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
-            .body(invalid_body)
+            .body(body)
             .send()
             .await
             .expect("Failed to execute request.");
