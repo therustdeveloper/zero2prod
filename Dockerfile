@@ -3,7 +3,7 @@ FROM rust:1.73.0 AS builder
 ENV SQLX_OFFILE=true
 WORKDIR /app
 COPY . .
-RUN cargo build --release rust-builder
+RUN cargo build --release --target rust-builder
 #--target x86_64-unknown-linux-musl
 
 FROM scratch
