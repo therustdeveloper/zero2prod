@@ -180,3 +180,9 @@ doctl apps list
 ```shell
 doctl apps delete APPLICATION_ID
 ```
+
+## Host to list of targets with Rust
+
+```shell
+docker run -t -i rust:1.73.0 rustc --print target-list
+```
