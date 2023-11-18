@@ -4,9 +4,9 @@ use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use zero2prod::configuration::{get_configuration, DatabaseSettings};
-use zero2prod::telemetry::{get_subscriber, init_subscriber};
-use zero2prod::startup::{build, get_connection_pool};
 use zero2prod::startup::Application;
+use zero2prod::startup::{build, get_connection_pool};
+use zero2prod::telemetry::{get_subscriber, init_subscriber};
 
 // Ensure that the `tracing` stack is only initialized once using `once_cell`
 
@@ -48,7 +48,9 @@ pub async fn spawn_app() -> TestApp {
     configure_database(&configuration.database).await;
 
     // Launch the application as a background task
-    let server = build(configuration.clone()).await.expect("Failed to build the application.");
+    let server = build(configuration.clone())
+        .await
+        .expect("Failed to build the application.");
 
     let application = Application::build(configuration.clone())
         .await
@@ -63,7 +65,7 @@ pub async fn spawn_app() -> TestApp {
 
     TestApp {
         address,
-        db_pool: get_connection_pool(&configuration.database)
+        db_pool: get_connection_pool(&configuration.database),
     }
 }
 
@@ -71,7 +73,7 @@ pub async fn spawn_app() -> TestApp {
 
 pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
     // Create database
-    let mut connection = PgConnection::connect_with(&config.with_db())
+    let mut connection = PgConnection::connect_with(&config.without_db())
         .await
         .expect("Failed to connect to Postgres");
     connection

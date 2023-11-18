@@ -1,14 +1,14 @@
 //! src/startup.rs
-use crate::configuration::Settings;
 use crate::configuration::DatabaseSettings;
+use crate::configuration::Settings;
 use crate::email_client::EmailClient;
 use crate::routes::{health_check, subscribe, system};
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
+use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
-use sqlx::postgres::PgPoolOptions;
 use tracing_actix_web::TracingLogger;
 
 pub struct Application {
@@ -36,7 +36,10 @@ impl Application {
             timeout,
         );
 
-        let address = format!("{}:{}", configuration.application.host, configuration.application.port);
+        let address = format!(
+            "{}:{}",
+            configuration.application.host, configuration.application.port
+        );
 
         let listener = TcpListener::bind(address)?;
 

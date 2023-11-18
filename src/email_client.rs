@@ -180,7 +180,7 @@ mod tests {
     use fake::{Fake, Faker};
     use secrecy::Secret;
     use wiremock::matchers::any;
-    use wiremock::matchers::{header, header_exists, method, path};
+    //use wiremock::matchers::{header, header_exists, method, path};
     use wiremock::Request;
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -279,7 +279,7 @@ mod tests {
         assert_ok!(outcome);
     }
 
-    async fn send_email_fails_if_the_server_returns_500() {
+    /*async fn send_email_fails_if_the_server_returns_500() {
         // Arrange
 
         let mock_server = MockServer::start().await;
@@ -300,7 +300,7 @@ mod tests {
 
         // Assert
         assert_err!(outcome);
-    }
+    }*/
 
     #[tokio::test]
     async fn send_email_times_out_if_the_server_takes_too_long() {
