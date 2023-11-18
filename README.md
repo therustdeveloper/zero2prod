@@ -160,3 +160,23 @@ sqlx migrate add create_subscriptions_table
 sqlx migrate run
 Applied 20230408120058/migrate create subscriptions table (11.252282ms)
 ```
+
+## Application Deployment to Digital Ocean
+
+### Create the application
+
+```shell
+doctl apps create --spec spec.yaml
+```
+
+### List the applications
+
+```shell
+doctl apps list
+```
+
+### Delete an application
+
+```shell
+doctl apps delete APPLICATION_ID
+```
