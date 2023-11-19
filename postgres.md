@@ -97,3 +97,9 @@ This command ask for the password.
 ```shell
 psql -U newsletter -p 25060 -h app-ed2c7f62-1496-4fec-b577-955446e32972-do-user-15018276-0.c.db.ondigitalocean.com newsletter
 ```
+
+## After every migration execute the following command
+
+```shell
+cargo sqlx prepare
+```
