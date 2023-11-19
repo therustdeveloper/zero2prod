@@ -29,10 +29,7 @@ pub async fn confirm(parameters: web::Query<Parameters>, pool: web::Data<PgPool>
     }
 }
 
-#[tracing::instrument(
-name="Mark subscriber as confirmed",
-skip(subscriber_id, pool)
-)]
+#[tracing::instrument(name = "Mark subscriber as confirmed", skip(subscriber_id, pool))]
 pub async fn confirm_subscriber(pool: &PgPool, subscriber_id: Uuid) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
@@ -41,33 +38,32 @@ pub async fn confirm_subscriber(pool: &PgPool, subscriber_id: Uuid) -> Result<()
         "#,
         subscriber_id,
     )
-        .execute(pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Failed to execute query: {:?}", e);
-            e
-        })?;
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
 
     Ok(())
 }
 
-#[tracing::instrument(
-name = "Get subscriber_id from token",
-skip(subscription_token, pool)
-)]
-pub async fn get_subscriber_id_from_token(pool: &PgPool, subscription_token: &str,) -> Result<Option<Uuid>, sqlx::Error> {
+#[tracing::instrument(name = "Get subscriber_id from token", skip(subscription_token, pool))]
+pub async fn get_subscriber_id_from_token(
+    pool: &PgPool,
+    subscription_token: &str,
+) -> Result<Option<Uuid>, sqlx::Error> {
     let result = sqlx::query!(
         "SELECT subscriber_id FROM subscription_tokens \
         WHERE subscription_token = $1",
         subscription_token,
     )
-        .fetch_optional(pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Failed to execute query: {:?}", e);
-            e
-        })?;
+    .fetch_optional(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
 
     Ok(result.map(|r| r.subscriber_id))
 }
-

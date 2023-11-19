@@ -4,11 +4,11 @@ use crate::email_client::EmailClient;
 use crate::startup::ApplicationBaseUrl;
 use actix_web::{web, HttpResponse};
 use chrono::Utc;
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use sqlx::PgPool;
 use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
@@ -31,7 +31,7 @@ pub async fn subscribe(
     email_client: web::Data<EmailClient>,
     base_url: web::Data<ApplicationBaseUrl>,
 ) -> HttpResponse {
-    let  new_subscriber = match form.0.try_into() {
+    let new_subscriber = match form.0.try_into() {
         Ok(form) => form,
         Err(_) => return HttpResponse::BadRequest().finish(),
     };
@@ -45,13 +45,19 @@ pub async fn subscribe(
 
     if store_token(&pool, subscriber_id, &subscription_token)
         .await
-        .is_err() {
+        .is_err()
+    {
         return HttpResponse::InternalServerError().finish();
     }
 
-    if send_confirmation_email(&email_client, new_subscriber, &base_url.0, &subscription_token)
-        .await
-        .is_err()
+    if send_confirmation_email(
+        &email_client,
+        new_subscriber,
+        &base_url.0,
+        &subscription_token,
+    )
+    .await
+    .is_err()
     {
         return HttpResponse::InternalServerError().finish();
     }
@@ -60,8 +66,8 @@ pub async fn subscribe(
 }
 
 #[tracing::instrument(
-name = "Store subscription token in the database",
-skip(subscription_token, pool)
+    name = "Store subscription token in the database",
+    skip(subscription_token, pool)
 )]
 pub async fn store_token(
     pool: &PgPool,
@@ -76,12 +82,12 @@ pub async fn store_token(
         subscription_token,
         subscriber_id,
     )
-        .execute(pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Failed to execute query: {:?}", e);
-            e
-        })?;
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
 
     Ok(())
 }
@@ -98,8 +104,7 @@ pub async fn send_confirmation_email(
 ) -> Result<(), reqwest::Error> {
     let confirmation_link = format!(
         "{}/subscriptions/confirm?subscription_token={}",
-        base_url,
-        subscription_token,
+        base_url, subscription_token,
     );
 
     let plain_body = format!(
