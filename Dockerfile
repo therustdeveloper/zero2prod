@@ -37,6 +37,7 @@ RUN cargo build --release
 
 # Running Image
 FROM gcr.io/distroless/cc-debian11
+RUN apt-get update && apt install -y openssl
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app/target/release/zero2prod /app/zero2prod
