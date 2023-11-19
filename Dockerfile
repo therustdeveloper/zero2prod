@@ -1,13 +1,49 @@
-FROM rust:1.73.0 AS builder
+# Generate recipe file for dependencies
+FROM rust as planner
 ENV SQLX_OFFILE=true
 WORKDIR /app
+RUN cargo install cargo-chef
 COPY . .
-RUN cargo build --release --target x86_64-unknown-linux-gnu
+RUN cargo chef prepare --recipe-path recipe.json
 
-FROM scratch
-WORKDIR /
-COPY --from=builder /app/target/x86_64-unknown-linux-gnu/release/zero2prod zero2prod
-COPY configuration configuration
-ENV APP_ENVIRONMENT production
-ENTRYPOINT ["./zero2prod"]
-EXPOSE 8080
+# Build Dependencies
+FROM rust as cacher
+ENV SQLX_OFFILE=true
+WORKDIR /app
+RUN cargo install cargo-chef
+COPY --from=planner /app/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
+
+# Builder Image
+FROM rust as builder
+ENV USER=web
+ENV UID=1001
+ENV SQLX_OFFILE=true
+
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    "${USER}"
+
+COPY . /app
+WORKDIR /app
+COPY --from=cacher /app/target target
+COPY --from=cacher /usr/local/cargo /usr/local/cargo
+RUN cargo build --release
+
+# Running Image
+FROM gcr.io/distroless/cc-debian11
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder /app/target/release/zero2prod /app/zero2prod
+COPY configuration /app/configuration
+
+WORKDIR /app
+
+USER web:web
+
+CMD ["./zero2prod"]
