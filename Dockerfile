@@ -36,7 +36,7 @@ COPY --from=cacher /usr/local/cargo /usr/local/cargo
 RUN cargo build --release
 
 # Running Image
-FROM debian:bullseye-slim
+FROM debian:stable-slim
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends openssl ca-certificates \
     && apt-get autoremove -y \
