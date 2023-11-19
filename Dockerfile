@@ -36,12 +36,18 @@ COPY --from=cacher /usr/local/cargo /usr/local/cargo
 RUN cargo build --release
 
 # Running Image
-#FROM gcr.io/distroless/debian11-slim
-FROM debian:11-slim
+FROM debian:bullseye-slim
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/* \
+
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app/target/release/zero2prod /app/zero2prod
 COPY configuration /app/configuration
+ENV APP_ENVIRONMENT production
 
 WORKDIR /app
 
