@@ -73,3 +73,25 @@ After running this command a new `migrations` directory should appear and also a
 sqlx migrate run                                                                                                                                                                                      ─╯
 Applied 20231003004241/migrate create subscriptions table (5.215458ms)
 ```
+
+## List of migrations
+
+```shell
+sqlx migrate add add_status_to_subscriptions
+```
+
+## Migrate Database to Digital Ocean
+
+Set the password as environment variable
+
+```shell
+./scripts/migrate_do_db.sh $DO_DB_PASSWORD
+```
+
+## How to connect to Digital Ocean database using psql
+
+This command ask for the password.
+
+```shell
+psql -U newsletter -p 25060 -h app-ed2c7f62-1496-4fec-b577-955446e32972-do-user-15018276-0.c.db.ondigitalocean.com newsletter
+```
