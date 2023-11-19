@@ -186,3 +186,17 @@ doctl apps delete APPLICATION_ID
 ```shell
 docker run -t -i rust:1.73.0 rustc --print target-list
 ```
+
+## Apply the changes to DigitalOcean
+
+Grab your app identifier via: 
+
+```shell
+doctl apps list --format ID
+```
+
+Update the application:
+
+```shell
+doctl apps update $APP_ID --spec spec.yaml
+```

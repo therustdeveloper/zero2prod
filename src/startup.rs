@@ -2,6 +2,7 @@
 use crate::configuration::DatabaseSettings;
 use crate::configuration::Settings;
 use crate::email_client::EmailClient;
+use crate::routes::confirm;
 use crate::routes::{health_check, subscribe, system};
 use actix_web::dev::Server;
 use actix_web::web::Data;
@@ -45,7 +46,12 @@ impl Application {
 
         let port = listener.local_addr().unwrap().port();
 
-        let server = run(listener, connection_pool, email_client)?;
+        let server = run(
+            listener,
+            connection_pool,
+            email_client,
+            configuration.application.base_url,
+        )?;
 
         Ok(Self { port, server })
     }
@@ -59,23 +65,35 @@ impl Application {
     }
 }
 
+// We need to define a wrapper type in order to retrieve the URL
+// in the `subscribe` handler.
+// Retrieval from the context, in actix-web, is type-based: using
+// a raw `String` would expose us to conflicts.
+
+pub struct ApplicationBaseUrl(pub String);
+
 fn run(
     listener: TcpListener,
     db_pool: PgPool,
     email_client: EmailClient,
+    base_url: String,
 ) -> Result<Server, std::io::Error> {
     let db_pool = Data::new(db_pool);
     let email_client = Data::new(email_client);
+
+    let base_url = Data::new(ApplicationBaseUrl(base_url));
 
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             .route("/subscriptions", web::post().to(subscribe))
+            .route("/subscriptions/confirm", web::get().to(confirm))
             .route("/system", web::get().to(system))
             .app_data(db_pool.clone())
             .app_data(email_client.clone())
             .app_data(email_client.clone())
+            .app_data(base_url.clone())
     })
     .listen(listener)?
     .run();
@@ -106,7 +124,12 @@ pub async fn build(configuration: Settings) -> Result<Server, std::io::Error> {
 
     let listener = TcpListener::bind(address)?;
 
-    run(listener, connection_pool, email_client)
+    run(
+        listener,
+        connection_pool,
+        email_client,
+        configuration.application.base_url,
+    )
 }
 
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
