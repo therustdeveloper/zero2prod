@@ -78,6 +78,8 @@ Applied 20231003004241/migrate create subscriptions table (5.215458ms)
 
 ```shell
 sqlx migrate add add_status_to_subscriptions
+sqlx migrate add make_status_not_null_in_subscriptions
+sqlx migrate add create_subscription_tokens_table
 ```
 
 ## Migrate Database to Digital Ocean
