@@ -1,10 +1,10 @@
 //! tests/api/helpers.rs
 
 use once_cell::sync::Lazy;
-use sqlx::{Connection, Executor, PgConnection, PgPool};
+use sqlx::{Connection, Error, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
-use zero2prod::configuration::{get_configuration, DatabaseSettings};
+use zero2prod::configuration::{get_configuration, DatabaseSettings, Settings};
 use zero2prod::startup::Application;
 use zero2prod::startup::{build, get_connection_pool};
 use zero2prod::telemetry::{get_subscriber, init_subscriber};
@@ -33,6 +33,7 @@ pub struct TestApp {
     pub db_pool: PgPool,
     pub email_server: MockServer,
     pub port: u16,
+    pub configuration: Settings,
 }
 
 impl TestApp {
@@ -124,12 +125,13 @@ pub async fn spawn_app() -> TestApp {
         port: application_port,
         db_pool: get_connection_pool(&configuration.database),
         email_server,
+        configuration,
     }
 }
 
 // Not public anymore!
 
-pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
+async fn configure_database(config: &DatabaseSettings) -> PgPool {
     // Create database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -149,4 +151,16 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .expect("Failed to migrate the database");
 
     connection_pool
+}
+
+pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
+    let mut connection = PgConnection::connect_with(&configuration.database.without_db())
+        .await
+        .expect("Failed to connect to Postgres");
+    connection
+        .execute(&*format!(r#"DROP DATABASE "{}"#, configuration.database.database_name).as_str())
+        .await
+        .expect("Failed to drop database.");
+
+    Ok(())
 }
