@@ -15,7 +15,7 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 ENV SQLX_OFFLINE true
-RUN cargo sqlx prepare && cargo build --release --bin zero2prod
+RUN cargo build --release --bin zero2prod
 
 # Running Image
 FROM debian:stable-slim
