@@ -279,7 +279,8 @@ mod tests {
         assert_ok!(outcome);
     }
 
-    /*async fn send_email_fails_if_the_server_returns_500() {
+    #[tokio::test]
+    async fn send_email_fails_if_the_server_returns_500() {
         // Arrange
 
         let mock_server = MockServer::start().await;
@@ -300,7 +301,7 @@ mod tests {
 
         // Assert
         assert_err!(outcome);
-    }*/
+    }
 
     #[tokio::test]
     async fn send_email_times_out_if_the_server_takes_too_long() {
