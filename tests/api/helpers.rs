@@ -158,7 +158,7 @@ pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
         .await
         .expect("Failed to connect to Postgres");
     connection
-        .execute(&*format!(r#"DROP DATABASE "{}"#, configuration.database.database_name).as_str())
+        .execute(&*format!(r#"DROP DATABASE "{}";"#, configuration.database.database_name).as_str())
         .await
         .expect("Failed to drop database.");
 
