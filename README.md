@@ -12,11 +12,21 @@ Developing an API using Rust.
 - cargo install cargo-audit
 - cargo install cargo-expand
 - cargo install cargo-udeps
+- 
 ```
 ## Installing sqlx-cli
 
-```commandline
+```shell
 cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
+```
+
+### Generate queries to run in offline mode
+
+```shell
+cargo sqlx prepare -- --lib                                                                                                                                                                           ─╯
+    Checking zero2prod v0.1.0 (/Users/william/workspace/rust/zero2prod)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.78s
+query data written to `sqlx-data.json` in the current directory; please check this into version control
 ```
 
 Execute the following command to validate:
