@@ -159,12 +159,24 @@ pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
         .expect("Failed to connect to Postgres");
 
     connection
-        .execute(&*format!(r#"select pg_terminate_backend(pid) from pg_stat_activity where datname='{}';"#, configuration.database.database_name).as_str())
+        .execute(
+            &*format!(
+                r#"select pg_terminate_backend(pid) from pg_stat_activity where datname='{}';"#,
+                configuration.database.database_name
+            )
+            .as_str(),
+        )
         .await
         .expect("Failed to close all database connections.");
 
     connection
-        .execute(&*format!(r#"DROP DATABASE "{}";"#, configuration.database.database_name).as_str())
+        .execute(
+            &*format!(
+                r#"DROP DATABASE "{}";"#,
+                configuration.database.database_name
+            )
+            .as_str(),
+        )
         .await
         .expect("Failed to drop database.");
 

@@ -1,6 +1,6 @@
 //! tests/api/subscriptions_confirm.rs
 
-use crate::helpers::{spawn_app, delete_database};
+use crate::helpers::{delete_database, spawn_app};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
