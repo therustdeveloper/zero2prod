@@ -17,7 +17,7 @@ async fn health_check_works() {
         .expect("Failed to execute request.");
 
     // Delete temporal database
-    let _result = delete_database(app.configuration);
+    let _result = delete_database(app.configuration).await;
 
     // Assert
     assert!(response.status().is_success());

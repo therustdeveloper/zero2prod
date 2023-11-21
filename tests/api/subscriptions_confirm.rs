@@ -25,7 +25,7 @@ async fn the_link_returned_by_subscribe_returns_a_200_if_called() {
     let response = reqwest::get(confirmation_links.html).await.unwrap();
 
     // Delete temporal database
-    let _result = delete_database(app.configuration);
+    let _result = delete_database(app.configuration).await;
 
     // Assert
     assert_eq!(response.status().as_u16(), 200);
@@ -42,7 +42,7 @@ async fn confirmations_without_token_are_rejected_with_a_400() {
         .unwrap();
 
     // Delete temporal database
-    let _result = delete_database(app.configuration);
+    let _result = delete_database(app.configuration).await;
 
     // Assert
     assert_eq!(response.status().as_u16(), 400);
@@ -78,7 +78,7 @@ async fn clicking_on_the_confirmation_link_confirms_a_subscriber() {
         .expect("Failed to fetch saved subscription.");
 
     // Delete temporal database
-    let _result = delete_database(app.configuration);
+    let _result = delete_database(app.configuration).await;
 
     assert_eq!(saved.email, "ursula_le_guin@gmail.com");
     assert_eq!(saved.name, "le guin");
