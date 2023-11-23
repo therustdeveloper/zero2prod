@@ -18,6 +18,10 @@ Developing an API using Rust.
 
 ```shell
 cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
+
+To update the version:
+cargo uninstall sqlx-cli
+cargo install sqlx-cli
 ```
 
 ### Generate queries to run in offline mode
