@@ -41,7 +41,7 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
 async fn create_unconfirmed_subscriber(app: &TestApp) -> ConfirmationLinks {
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
 
-    let mock_guard = Mock::given(path("/email"))
+    let _mock_guard = Mock::given(path("/email"))
         .and(method("POST"))
         .respond_with(ResponseTemplate::new(200))
         .named("Create unconfirmed subscriber")
