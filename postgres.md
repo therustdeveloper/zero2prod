@@ -103,3 +103,14 @@ psql -U newsletter -p 25060 -h app-ed2c7f62-1496-4fec-b577-955446e32972-do-user-
 ```shell
 cargo sqlx prepare
 ```
+
+## PostgreSQL SQL Query to List Databases
+
+```sql
+select oid as database_id,
+       datname as database_name,
+       datallowconn as allow_connect,
+       datconnlimit as connection_limit
+from pg_database
+order by oid;
+```
