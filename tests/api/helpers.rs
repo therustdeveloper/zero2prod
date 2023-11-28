@@ -68,6 +68,7 @@ impl TestUser {
         .await
         .expect("Failed to store test user.");
     }
+
 }
 
 pub struct TestApp {
@@ -122,6 +123,20 @@ impl TestApp {
             .post(&format!("{}/newsletters", &self.address))
             .basic_auth(&self.test_user.username, Some(&self.test_user.password))
             .json(&body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn post_login<Body>(&self, body: &Body) -> reqwest::Response
+        where
+            Body: serde::Serialize,
+    {
+        reqwest::Client::new()
+            .post(&format!("{}/login", &self.address))
+            // This `reqwest` method makes sure that the body is URL-encoded
+            // and the `Content-Type` header is set accordingly.
+            .form(body)
             .send()
             .await
             .expect("Failed to execute request.")

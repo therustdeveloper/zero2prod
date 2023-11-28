@@ -60,7 +60,7 @@ impl ResponseError for PublishError {
             PublishError::AuthError(_) => {
                 let mut response = HttpResponse::new(StatusCode::UNAUTHORIZED);
 
-                let header_value = HeaderValue::from_str(r#"Basic realm="Publish""#).unwrap();
+                let header_value = HeaderValue::from_str(r#"Basic realm="publish""#).unwrap();
 
                 response
                     .headers_mut()

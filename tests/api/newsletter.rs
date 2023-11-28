@@ -184,7 +184,7 @@ async fn request_missing_authorization_are_rejected() {
     assert_eq!(401, response.status().as_u16());
 
     assert_eq!(
-        r#"Basic realm="Publish""#,
+        r#"Basic realm="publish""#,
         response.headers()["WWW-Authenticate"]
     );
 }
@@ -218,12 +218,12 @@ async fn non_existing_user_is_rejected() {
     // Assert
     assert_eq!(401, response.status().as_u16());
     assert_eq!(
-        r#"Basic realm="Publish""#,
+        r#"Basic realm="publish""#,
         response.headers()["WWW-Authenticate"]
     );
 }
 
-#[tokio::test]
+/*#[tokio::test]
 async fn invalid_password_is_rejected() {
     // Arrange
     let app = spawn_app().await;
@@ -233,7 +233,41 @@ async fn invalid_password_is_rejected() {
     // Random password
     let password = Uuid::new_v4().to_string();
 
-    assert_eq!(app.test_user.password, password);
+    assert_ne!(app.test_user.password, password);
+
+    let response = reqwest::Client::new()
+        .post(&format!("{}/newsletters", &app.address))
+        .basic_auth(username, Some(password))
+        .json(&serde_json::json!({
+            "title": "Newsletter title",
+            "content": {
+                "text": "Newsletter body as plain text",
+                "html": "<p>Newsletter body as HTML</p>",
+            }
+        }))
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    // Delete temporal database
+    let _result = delete_database(app.configuration).await;
+
+    // Assert
+    assert_eq!(401, response.status().as_u16());
+    assert_eq!(
+        r#"Basic realm="publish""#,
+        response.headers()["WWW-Authenticate"]
+    );
+}*/
+
+#[tokio::test]
+async fn invalid_password_is_rejected() {
+    // Arrange
+    let app = spawn_app().await;
+    let username = &app.test_user.username;
+    // Random password
+    let password = Uuid::new_v4().to_string();
+    assert_ne!(app.test_user.password, password);
 
     let response = reqwest::Client::new()
         .post(&format!("{}/newsletters", &app.address))
