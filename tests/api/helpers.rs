@@ -68,7 +68,6 @@ impl TestUser {
         .await
         .expect("Failed to store test user.");
     }
-
 }
 
 pub struct TestApp {
@@ -129,9 +128,14 @@ impl TestApp {
     }
 
     pub async fn post_login<Body>(&self, body: &Body) -> reqwest::Response
-        where
-            Body: serde::Serialize,
+    where
+        Body: serde::Serialize,
     {
+        reqwest::Client::builder()
+            .redirect(reqwest::redirect::Policy::none())
+            .build()
+            .unwrap();
+
         reqwest::Client::new()
             .post(&format!("{}/login", &self.address))
             // This `reqwest` method makes sure that the body is URL-encoded
@@ -254,4 +258,10 @@ pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
         .expect("Failed to drop database.");
 
     Ok(())
+}
+
+pub fn assert_is_redirect_to(response: &reqwest::Response, location: &str) {
+    assert_eq!(response.status().as_u16(), 303);
+
+    assert_eq!(response.headers().get("Location").unwrap(), location);
 }

@@ -1,6 +1,8 @@
 //! tests/api/login.rs
 
-use crate::helpers::{spawn_app, delete_database};
+use crate::helpers::assert_is_redirect_to;
+use crate::helpers::{delete_database, spawn_app};
+use std::collections::HashSet;
 
 #[tokio::test]
 async fn an_error_flash_message_is_set_on_failure() {
@@ -16,8 +18,18 @@ async fn an_error_flash_message_is_set_on_failure() {
     let response = app.post_login(&login_body).await;
 
     // Delete temporal database
-    let _response = delete_database(app.configuration).await;
+    let _db_result = delete_database(app.configuration).await;
 
     // Assert
-    assert_eq!(response.status().as_u16(), 303);
+    assert_is_redirect_to(&response, "/login");
+
+    let cookies: HashSet<_> = response
+        .headers()
+        .get_all("Set-Cookie")
+        .into_iter()
+        .collect();
+
+    let flash_cookie = response.cookies().find(|c| c.name() == "_flash").unwrap();
+
+    assert_eq!(flash_cookie.value(), "Authentication failed")
 }
