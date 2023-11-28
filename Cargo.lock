@@ -1218,6 +1218,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "htmlescape"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9025058dae765dee5070ec375f591e2ba14638c63feff74f13805a72e523163"
+
+[[package]]
 name = "http"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3632,6 +3638,9 @@ dependencies = [
  "h2 0.4.0",
  "handlebars",
  "hermit-abi 0.3.3",
+ "hex",
+ "hmac",
+ "htmlescape",
  "lettre",
  "linkify",
  "once_cell",
@@ -3643,6 +3652,7 @@ dependencies = [
  "serde",
  "serde-aux",
  "serde_json",
+ "sha2",
  "sqlx",
  "thiserror",
  "tokio",
@@ -3652,6 +3662,7 @@ dependencies = [
  "tracing-log 0.2.0",
  "tracing-subscriber",
  "unicode-segmentation",
+ "urlencoding",
  "uuid",
  "validator",
  "webpki",
