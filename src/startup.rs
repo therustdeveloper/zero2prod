@@ -8,11 +8,11 @@ use crate::routes::{
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
+use secrecy::Secret;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
-use secrecy::Secret;
 
 pub struct Application {
     port: u16,
@@ -141,7 +141,7 @@ pub async fn build(configuration: Settings) -> Result<Server, std::io::Error> {
         connection_pool,
         email_client,
         configuration.application.base_url,
-        configuration.application.hmac_secret
+        configuration.application.hmac_secret,
     )
 }
 
