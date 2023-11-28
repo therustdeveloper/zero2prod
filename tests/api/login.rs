@@ -2,7 +2,6 @@
 
 use crate::helpers::assert_is_redirect_to;
 use crate::helpers::{delete_database, spawn_app};
-use std::collections::HashSet;
 
 #[tokio::test]
 async fn an_error_flash_message_is_set_on_failure() {
@@ -14,26 +13,18 @@ async fn an_error_flash_message_is_set_on_failure() {
         "username": "random-username",
         "password": "random-password"
     });
-
     let response = app.post_login(&login_body).await;
 
     // Assert
     assert_is_redirect_to(&response, "/login");
 
-    let cookies: HashSet<_> = response
-        .headers()
-        .get_all("Set-Cookie")
-        .into_iter()
-        .collect();
-
-    let flash_cookie = response.cookies().find(|c| c.name() == "_flash").unwrap();
-
-    assert_eq!(flash_cookie.value(), "Authentication failed");
-
+    // Act - Part 2 - Follow the redirect
     let html_page = app.get_login_html().await;
+    assert!(html_page.contains("<p><i>Authentication failed</i></p>"));
 
-    assert!(html_page.contains(r#"<p><i>Authentication failed</i></p>"#));
+    // Act - Part 3 - Reload the login page
+    let html_page = app.get_login_html().await;
+    assert!(!html_page.contains("Authentication failed"));
 
-    // Delete temporal database
-    let _db_result = delete_database(app.configuration).await;
+    let _db_response = delete_database(app.configuration).await;
 }
