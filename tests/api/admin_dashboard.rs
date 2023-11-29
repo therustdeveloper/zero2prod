@@ -10,6 +10,9 @@ async fn you_must_be_logged_in_to_access_the_admin_dashboard() {
 
     // Assert
     assert_is_redirect_to(&response, "/login");
+
+    // Delete temporal database
+    let _db_response = delete_database(app.configuration).await;
 }
 
 #[tokio::test]
