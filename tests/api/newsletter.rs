@@ -1,4 +1,6 @@
-use crate::helpers::{assert_is_redirect_to, spawn_app, ConfirmationLinks, TestApp, delete_database};
+use crate::helpers::{
+    assert_is_redirect_to, delete_database, spawn_app, ConfirmationLinks, TestApp,
+};
 use fake::faker::internet::en::SafeEmail;
 use fake::faker::name::en::Name;
 use fake::Fake;
@@ -15,7 +17,7 @@ async fn create_unconfirmed_subscriber(app: &TestApp) -> ConfirmationLinks {
         "name": name,
         "email": email
     }))
-        .unwrap();
+    .unwrap();
 
     let _mock_guard = Mock::given(path("/email"))
         .and(method("POST"))

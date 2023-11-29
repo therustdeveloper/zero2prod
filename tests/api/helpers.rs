@@ -1,7 +1,7 @@
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
 use once_cell::sync::Lazy;
-use sqlx::{Connection, Executor, PgConnection, PgPool, Error};
+use sqlx::{Connection, Error, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
 use zero2prod::configuration::{get_configuration, DatabaseSettings, Settings};
@@ -262,7 +262,7 @@ pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
                 r#"select pg_terminate_backend(pid) from pg_stat_activity where datname='{}';"#,
                 configuration.database.database_name
             )
-                .as_str(),
+            .as_str(),
         )
         .await
         .expect("Failed to close all database connections.");
@@ -273,14 +273,13 @@ pub async fn delete_database(configuration: Settings) -> Result<(), Error> {
                 r#"DROP DATABASE "{}";"#,
                 configuration.database.database_name
             )
-                .as_str(),
+            .as_str(),
         )
         .await
         .expect("Failed to drop database.");
 
     Ok(())
 }
-
 
 pub struct TestUser {
     user_id: Uuid,

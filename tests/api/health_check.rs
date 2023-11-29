@@ -1,4 +1,4 @@
-use crate::helpers::{spawn_app, delete_database};
+use crate::helpers::{delete_database, spawn_app};
 
 #[tokio::test]
 async fn health_check_works() {

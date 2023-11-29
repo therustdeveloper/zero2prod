@@ -1,4 +1,4 @@
-use crate::helpers::{assert_is_redirect_to, spawn_app, delete_database};
+use crate::helpers::{assert_is_redirect_to, delete_database, spawn_app};
 
 #[tokio::test]
 async fn you_must_be_logged_in_to_access_the_admin_dashboard() {

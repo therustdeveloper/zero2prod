@@ -1,4 +1,4 @@
-use crate::helpers::{assert_is_redirect_to, spawn_app, delete_database};
+use crate::helpers::{assert_is_redirect_to, delete_database, spawn_app};
 use uuid::Uuid;
 
 #[tokio::test]

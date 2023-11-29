@@ -1,4 +1,4 @@
-use crate::helpers::{assert_is_redirect_to, spawn_app, delete_database};
+use crate::helpers::{assert_is_redirect_to, delete_database, spawn_app};
 
 #[tokio::test]
 async fn an_error_flash_message_is_set_on_failure() {
