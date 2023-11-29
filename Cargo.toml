@@ -15,37 +15,39 @@ name = "zero2prod"
 
 [dependencies]
 actix-web = "4.4.0"
-actix-web-flash-messages = { version = "0.4.2", features = ["cookies"] }
-actix-session = { version = "0.7", features = ["redis-rs-tls-session"] }
 tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
-sqlx = { version = "0.7.3", default-features = false, features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono", "migrate"] }
 serde = "1.0.193"
-serde-aux = "4.2.0"
 config = { version = "0.13.4", default-features = false, features = ["yaml"] }
-uuid = { version = "1.6.1", features = ["v4"] }
-chrono = { version = "0.4.31", default-features = false, features = ["clock"] }
+sqlx = { version = "0.7.3", default-features = false, features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono", "migrate"] }
+uuid = { version = "1.6.1", features = ["v4", "serde"] }
+reqwest = { version = "0.11.22", default-features = false, features = ["json", "rustls-tls", "cookies"] }
+log = "0.4"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3.9"
 tracing-log = "0.2.0"
-tracing-actix-web = "0.7.9"
-secrecy = { version = "0.8.0", features = ["serde"] }
-h2 = "0.4.0"
-webpki = "0.22.4"
-hermit-abi = "0.3.3"
-unicode-segmentation = "1.10.1"
-claims = "0.7.1"
-validator = "0.16.1"
-reqwest = { version = "0.11.22", default-features = false, features = ["json", "rustls-tls", "cookies"] }
-handlebars = "4.5.0"
-dotenv = "0.15.0"
-serde_json = "1.0.108"
-lettre = { version = "0.11.2", features = ["tokio1", "tokio1-native-tls"] }
-rand = { version = "0.8.5", features = ["std_rng"] }
 thiserror = "1.0.50"
+serde-aux = "4.2.0"
+unicode-segmentation = "1.10.1"
+rand = { version = "0.8.5", features = ["std_rng"] }
 anyhow = "1.0.75"
 base64 = "0.21.5"
 argon2 = { version = "0.4", features = ["std"] }
+validator = "0.16.1"
+tracing-actix-web = "0.7.9"
+secrecy = { version = "0.8.0", features = ["serde"] }
+actix-web-flash-messages = { version = "0.4.2", features = ["cookies"] }
+actix-session = { version = "0.7", features = ["redis-rs-tls-session"] }
+serde_json = "1.0.108"
+actix-web-lab = "0.18"
+chrono = { version = "0.4.31", default-features = false, features = ["clock"] }
+h2 = "0.4.0"
+webpki = "0.22.4"
+hermit-abi = "0.3.3"
+claims = "0.7.1"
+handlebars = "4.5.0"
+dotenv = "0.15.0"
+lettre = { version = "0.11.2", features = ["tokio1", "tokio1-native-tls"] }
 urlencoding = "2"
 htmlescape = "0.3"
 hmac = {  version = "0.12.1", features = ["std"] }
@@ -61,3 +63,5 @@ tokio = { version = "1.34.0", features = ["rt", "macros"] }
 wiremock = "0.5.21"
 serde_json = "1.0.108"
 linkify = "0.10.0"
+serde_urlencoded = "0.7.1"
+claims = "0.7.0"

@@ -1,6 +1,4 @@
-//! tests/api/health_check.rs
-
-use crate::helpers::{delete_database, spawn_app};
+use crate::helpers::{spawn_app, delete_database};
 
 #[tokio::test]
 async fn health_check_works() {
@@ -16,10 +14,10 @@ async fn health_check_works() {
         .await
         .expect("Failed to execute request.");
 
-    // Delete temporal database
-    let _db_response = delete_database(app.configuration).await;
-
     // Assert
     assert!(response.status().is_success());
     assert_eq!(Some(0), response.content_length());
+
+    // Delete temporal database
+    let _db_response = delete_database(app.configuration).await;
 }

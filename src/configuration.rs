@@ -1,9 +1,9 @@
-//! src/configuration.rs
 use crate::domain::SubscriberEmail;
+use crate::email_client::EmailClient;
 use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
-use sqlx::ConnectOptions;
+use std::convert::{TryFrom, TryInto};
 
 #[derive(serde::Deserialize, Clone)]
 pub struct Settings {
@@ -11,24 +11,6 @@ pub struct Settings {
     pub application: ApplicationSettings,
     pub email_client: EmailClientSettings,
     pub redis_uri: Secret<String>,
-}
-
-#[derive(serde::Deserialize, Clone)]
-pub struct EmailClientSettings {
-    pub base_url: String,
-    pub sender_email: String,
-    pub authorization_token: Secret<String>,
-    pub timeout_milliseconds: u64,
-}
-
-impl EmailClientSettings {
-    pub fn sender(&self) -> Result<SubscriberEmail, String> {
-        SubscriberEmail::parse(self.sender_email.clone())
-    }
-
-    pub fn timeout(&self) -> std::time::Duration {
-        std::time::Duration::from_millis(self.timeout_milliseconds)
-    }
 }
 
 #[derive(serde::Deserialize, Clone)]
@@ -56,23 +38,48 @@ impl DatabaseSettings {
         let ssl_mode = if self.require_ssl {
             PgSslMode::Require
         } else {
-            // Try an encrypted connection, fallback to unencrypted if it fails
             PgSslMode::Prefer
         };
         PgConnectOptions::new()
             .host(&self.host)
             .username(&self.username)
-            .password(&self.password.expose_secret())
+            .password(self.password.expose_secret())
             .port(self.port)
             .ssl_mode(ssl_mode)
     }
 
     pub fn with_db(&self) -> PgConnectOptions {
-        let options = self.without_db().database(&self.database_name);
-        options
-            .clone()
-            .log_statements(tracing_log::log::LevelFilter::Trace);
-        options
+        self.without_db().database(&self.database_name)
+    }
+}
+
+#[derive(serde::Deserialize, Clone)]
+pub struct EmailClientSettings {
+    pub base_url: String,
+    pub sender_email: String,
+    pub authorization_token: Secret<String>,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub timeout_milliseconds: u64,
+}
+
+impl EmailClientSettings {
+    pub fn client(self) -> EmailClient {
+        let sender_email = self.sender().expect("Invalid sender email address.");
+        let timeout = self.timeout();
+        EmailClient::new(
+            self.base_url,
+            sender_email,
+            self.authorization_token,
+            timeout,
+        )
+    }
+
+    pub fn sender(&self) -> Result<SubscriberEmail, String> {
+        SubscriberEmail::parse(self.sender_email.clone())
+    }
+
+    pub fn timeout(&self) -> std::time::Duration {
+        std::time::Duration::from_millis(self.timeout_milliseconds)
     }
 }
 
@@ -85,10 +92,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
         .try_into()
-        .expect("Failed to parse APP_ENVIRONMENT");
-
+        .expect("Failed to parse APP_ENVIRONMENT.");
     let environment_filename = format!("{}.yaml", environment.as_str());
-
     let settings = config::Config::builder()
         .add_source(config::File::from(
             configuration_directory.join("base.yaml"),
@@ -96,9 +101,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(config::File::from(
             configuration_directory.join(environment_filename),
         ))
-        // Add in settings from environment variables (with a prefix of APP and
-        // '__' as separator)
-        // E.g. `APP_APPLICATION__PORT=5001 would set `Settings.application.port`.
+        // Add in settings from environment variables (with a prefix of APP and '__' as separator)
+        // E.g. `APP_APPLICATION__PORT=5001 would set `Settings.application.port`
         .add_source(
             config::Environment::with_prefix("APP")
                 .prefix_separator("_")
@@ -109,6 +113,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     settings.try_deserialize::<Settings>()
 }
 
+/// The possible runtime environment for our application.
 pub enum Environment {
     Local,
     Production,
@@ -131,40 +136,9 @@ impl TryFrom<String> for Environment {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
             other => Err(format!(
-                "{} is not a supported environment. \
-            Use either `local` or `production`.",
+                "{} is not a supported environment. Use either `local` or `production`.",
                 other
             )),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Config {
-    pub smtp_host: String,
-    pub smtp_port: u16,
-    pub smtp_user: String,
-    pub smtp_pass: String,
-    pub smtp_from: String,
-    pub smtp_to: String,
-}
-
-impl Config {
-    pub fn init() -> Self {
-        let smtp_host = std::env::var("SMTP_HOST").expect("SMTP_HOST must be set");
-        let smtp_port = std::env::var("SMTP_PORT").expect("SMTP_PORT must be set");
-        let smtp_user = std::env::var("SMTP_USER").expect("SMTP_USER must be set");
-        let smtp_pass = std::env::var("SMTP_PASS").expect("SMTP_PASS must be set");
-        let smtp_from = std::env::var("SMTP_FROM").expect("SMTP_FROM must be set");
-        let smtp_to = std::env::var("SMTP_TO").expect("SMTP_TO must be set");
-
-        Self {
-            smtp_host,
-            smtp_pass,
-            smtp_user,
-            smtp_port: smtp_port.parse::<u16>().unwrap(),
-            smtp_from,
-            smtp_to,
         }
     }
 }

@@ -1,5 +1,4 @@
-//! src/telemetry.rs
-use tokio::task::JoinHandle;
+use actix_web::rt::task::JoinHandle;
 use tracing::subscriber::set_global_default;
 use tracing::Subscriber;
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
@@ -44,6 +43,5 @@ where
     R: Send + 'static,
 {
     let current_span = tracing::Span::current();
-
-    tokio::task::spawn_blocking(move || current_span.in_scope(f))
+    actix_web::rt::task::spawn_blocking(move || current_span.in_scope(f))
 }

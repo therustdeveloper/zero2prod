@@ -1,7 +1,4 @@
-//! tests/api/login.rs
-
-use crate::helpers::assert_is_redirect_to;
-use crate::helpers::{delete_database, spawn_app};
+use crate::helpers::{assert_is_redirect_to, spawn_app, delete_database};
 
 #[tokio::test]
 async fn an_error_flash_message_is_set_on_failure() {
@@ -24,8 +21,8 @@ async fn an_error_flash_message_is_set_on_failure() {
 
     // Act - Part 3 - Reload the login page
     let html_page = app.get_login_html().await;
-
     assert!(!html_page.contains("Authentication failed"));
 
+    // Delete temporal database
     let _db_response = delete_database(app.configuration).await;
 }
