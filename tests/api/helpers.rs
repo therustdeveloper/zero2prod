@@ -7,8 +7,7 @@ use sqlx::{Connection, Error, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
 use zero2prod::configuration::{get_configuration, DatabaseSettings, Settings};
-use zero2prod::startup::Application;
-use zero2prod::startup::{build, get_connection_pool};
+use zero2prod::startup::{get_connection_pool, Application};
 use zero2prod::telemetry::{get_subscriber, init_subscriber};
 
 // Ensure that the `tracing` stack is only initialized once using `once_cell`
@@ -178,23 +177,12 @@ pub async fn spawn_app() -> TestApp {
     // Create and migrate the database
     configure_database(&configuration.database).await;
 
-    // Launch the application as a background task
-    let server = build(configuration.clone())
-        .await
-        .expect("Failed to build the application.");
-
     let application = Application::build(configuration.clone())
         .await
         .expect("Failed to build application.");
 
-    let _ = tokio::spawn(application.run_until_stopped());
-
-    let _ = tokio::spawn(server);
-
-    let application = Application::build(configuration.clone())
-        .await
-        .expect("Failed to build application.");
     let application_port = application.port();
+
     let _ = tokio::spawn(application.run_until_stopped());
 
     let client = reqwest::Client::builder()

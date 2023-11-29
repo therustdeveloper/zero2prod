@@ -114,3 +114,12 @@ select oid as database_id,
 from pg_database
 order by oid;
 ```
+
+## Create a PostgreSQL Script
+
+```sql
+select concat('DROP DATABASE "', datname, '";')
+from pg_database
+where datname not in ('template1', 'template0', 'postgres', 'rustwebdev', 'newsletter')
+order by oid;
+```
