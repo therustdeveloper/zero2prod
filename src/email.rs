@@ -1,4 +1,4 @@
-use crate::configuration::Config;
+/*use crate::configuration::Config;
 use handlebars::Handlebars;
 use lettre::{
     message::header::ContentType, transport::smtp::authentication::Credentials, AsyncSmtpTransport,
@@ -103,4 +103,4 @@ impl Email {
         )
         .await
     }
-}
+}*/
