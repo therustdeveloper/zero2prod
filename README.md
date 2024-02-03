@@ -126,7 +126,7 @@ newsletter=# exit
 Connecting as the new user:
 
 ```commandline
-psql --host=localhost --dbname=newsletter --username=newsletter                       ─╯
+psql --host=localhost --dbname=newsletter --username=newsletter
 Password for user newsletter: 
 psql (14.7 (Ubuntu 14.7-0ubuntu0.22.04.1))
 SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
@@ -173,6 +173,25 @@ sqlx migrate add create_subscriptions_table
 ```commandline
 sqlx migrate run
 Applied 20230408120058/migrate create subscriptions table (11.252282ms)
+```
+
+## List tables
+
+```shell
+newsletter=> \dt
+                 List of relations
+ Schema |         Name         | Type  |   Owner    
+--------+----------------------+-------+------------
+ public | _sqlx_migrations     | table | newsletter
+ public | idempotency          | table | newsletter
+ public | issue_delivery_queue | table | newsletter
+ public | newsletter_issues    | table | newsletter
+ public | subscription_tokens  | table | newsletter
+ public | subscriptions        | table | newsletter
+ public | users                | table | newsletter
+(7 rows)
+
+newsletter=>
 ```
 
 ## Application Deployment to Digital Ocean
