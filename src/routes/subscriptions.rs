@@ -81,6 +81,7 @@ pub async fn subscribe(
         .commit()
         .await
         .context("Failed to commit SQL transaction to store a new subscriber.")?;
+
     send_confirmation_email(
         &email_client,
         new_subscriber,
