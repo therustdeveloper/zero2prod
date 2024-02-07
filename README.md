@@ -226,3 +226,13 @@ cargo install bunyan
 ```shell
 cargo t subscribe_fails_if_there_is_a_fatal_database_error | bunyan
 ```
+
+## Development Environment
+
+Set the environment variables for sending email in the development environment:
+
+```shell
+export MAIL_EMAIL_CLIENT__BASE_URL="https://api.postmarkapp.com"
+export MAIL_EMAIL_CLIENT__SENDER_EMAIL="username@domain.com"
+export MAIL_EMAIL_CLIENT__AUTHORIZATION_TOKEN="YOUR_TOKEN"
+```
