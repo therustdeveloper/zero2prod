@@ -19,7 +19,7 @@ async fn main() -> anyhow::Result<()> {
     tokio::select! {
         o = application_task => report_exit("API", o),
         o = worker_task =>  report_exit("Background worker", o),
-    };
+    }
 
     Ok(())
 }
