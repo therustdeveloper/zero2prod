@@ -1,5 +1,5 @@
 # Generate recipe file for dependencies
-FROM lukemathwalker/cargo-chef:latest-rust-1.73.0 as chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.75.0 as chef
 #FROM rust as planner
 WORKDIR /app
 RUN apt update && apt install lld clang -y
