@@ -2,14 +2,14 @@
 
 Developing an API using Rust.
 
-## ToDOo
+## ToDo
 
 I'm going to do the following:
 
 - Study the book again.
 - Document all the steps.
 - Work with Google Cloud Run.
-- Implement the application in Kubernetes as well.
+- Implement the application in Kubernetes.
 - Create a CLI to work with the application.
 - Migrate this project to Axum.
 - Create a better instrumentation with tracing and color_eyre.

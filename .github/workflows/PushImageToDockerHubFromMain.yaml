@@ -22,4 +22,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: hachikoapp/zero2prod:0.1.0
+          tags: hachikoapp/zero2prod:0.1.1
