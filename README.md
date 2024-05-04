@@ -1,18 +1,18 @@
 # Zero to Production in Rust
 
-Developing an API using Rust.
+Developing an API using Rust with Actix Web.
 
 ## ToDo
 
-I'm going to do the following:
-
-- Study the book again.
 - Document all the steps.
 - Work with Google Cloud Run.
 - Implement the application in Kubernetes.
 - Create a CLI to work with the application.
 - Migrate this project to Axum.
 - Create a better instrumentation with tracing and color_eyre.
+- Create a Helm Chart to deploy the application.
+- Deploy the application using ArgoCD.
+- Integrate the CI/CD with Slack.
 
 ## Development Environment
 
@@ -24,8 +24,8 @@ I'm going to do the following:
 - cargo install cargo-audit
 - cargo install cargo-expand
 - cargo install cargo-udeps
-- 
 ```
+
 ## Installing sqlx-cli
 
 ```shell
@@ -52,6 +52,8 @@ sqlx --help
 ```
 
 ## PostgreSQL Database
+
+** I'm moving exclusive to Docker Desktop as development environment. **
 
 On macOS I installed PostgreSQL Database using the official installation, the PATH is:
 
@@ -188,6 +190,8 @@ Applied 20230408120058/migrate create subscriptions table (11.252282ms)
 ```
 
 ## Application Deployment to Digital Ocean
+
+The `spec.yaml` file is used to deploy the application to Digital Ocean.
 
 ### Create the application
 
