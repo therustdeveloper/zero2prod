@@ -93,6 +93,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .unwrap_or_else(|_| "local".into())
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT.");
+
     let environment_filename = format!("{}.yaml", environment.as_str());
     let settings = config::Config::builder()
         .add_source(config::File::from(
@@ -108,12 +109,20 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
                 .prefix_separator("_")
                 .separator("__"),
         )
+        // Add in settings from environment variable (with a prefix of MAIL and '__' as separator)
+        // E.g. MAIL_EMAIL_CLIENT__BASE_URL="https://api.postmarkapp.com" would set `Settings.email_client.base_url`
+        .add_source(
+            config::Environment::with_prefix("MAIL")
+                .prefix_separator("_")
+                .separator("__"),
+        )
         .build()?;
 
     settings.try_deserialize::<Settings>()
 }
 
 /// The possible runtime environment for our application.
+#[derive(Debug)]
 pub enum Environment {
     Local,
     Production,

@@ -2,6 +2,18 @@
 
 Developing an API using Rust.
 
+## ToDo
+
+I'm going to do the following:
+
+- Study the book again.
+- Document all the steps.
+- Work with Google Cloud Run.
+- Implement the application in Kubernetes.
+- Create a CLI to work with the application.
+- Migrate this project to Axum.
+- Create a better instrumentation with tracing and color_eyre.
+
 ## Development Environment
 
 ```commandline
@@ -244,4 +256,14 @@ cargo install bunyan
 
 ```shell
 cargo t subscribe_fails_if_there_is_a_fatal_database_error | bunyan
+```
+
+## Development Environment
+
+Set the environment variables for sending email in the development environment:
+
+```shell
+export MAIL_EMAIL_CLIENT__BASE_URL="https://api.postmarkapp.com"
+export MAIL_EMAIL_CLIENT__SENDER_EMAIL="username@domain.com"
+export MAIL_EMAIL_CLIENT__AUTHORIZATION_TOKEN="YOUR_TOKEN"
 ```

@@ -1,3 +1,4 @@
+//! src/email_client.rs
 use crate::domain::SubscriberEmail;
 use reqwest::Client;
 use secrecy::{ExposeSecret, Secret};
@@ -42,6 +43,7 @@ impl EmailClient {
         };
         self.http_client
             .post(&url)
+            .header("Content-Type", "application/json")
             .header(
                 "X-Postmark-Server-Token",
                 self.authorization_token.expose_secret(),
